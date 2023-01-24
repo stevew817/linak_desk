@@ -1,15 +1,19 @@
 # Matter-controlled standing desk
 
-This project exposes a LINAK standing desk (tested with DL5IC motor with built-in controller, but should in theory work with CBD6S control box too...) to a Matter controller over Thread, such that it can easily be integrated with smart home logic. Primarily because it is cool to see things move on voice commands, but also because it allows you to do some health-related things, like put your sit/stand cycle on a timer...
+This project exposes a LINAK standing desk (tested with DL5IC lift column pair which has a built-in controller, but should in theory work with CBD6S control box too...) to a Matter controller over Thread, such that it can easily be integrated with smart home logic. Primarily because it is cool to see things move on voice commands, but also because it allows you to do some health-related things, like put your sit/stand cycle on a timer...
 
 # Disclaimer
 The code provided here is working 'good enough' for my personal use, but I am in no way responsible should anything go wrong when you try to replicate this project. Do so entirely at your own risk.
 
 # Materials used
 
-- RJ45 cable (cut)
 - Silicon Labs EFR32xG24 development board (BRD2601B)
-- Handful of components and wiring on a protoboard
+- Handful of components and wiring on a protoboard:
+  - 2 pcs N-channel MOSFET
+  - 2 pcs ~20kOhm resistor
+  - 2k7 and 8k2 resistor (or other combination which gets you a ~ 1/4 voltage divider with a multiple-kOhm total resistance)
+  - 3V3 LDO regulator
+  - RJ45 connector (I cut a cat5 patch cord)
 - [Silicon Labs Matter SDK](https://github.com/SiliconLabs/matter/tree/release_1.0.2-1.0) (tested with v1.0.2-1.0)
 
 # Instructions
@@ -28,18 +32,29 @@ The code provided here is working 'good enough' for my personal use, but I am in
 
 ## Hardware
 
-1. Solder together adapter board (TODO: add instructions/schematic)
-2. Connect BRD2601B to adapter board (TODO: add wiring diagram)
+1. Solder together adapter board
+![schematic](./schematic.png)
+2. Connect BRD2601B to adapter board as such:
+  - 3V3 to 'external battery connector' positive terminal
+  - GND to 'external battery connector' negative terminal
+  - RX to BRD2601B expansion header pin 4 (GPIO pin PC03 / USART0_RX on the EFR)
+  - TX to BRD2601B expansion header pin 6 (GPIO pin PC02 / USART0_TX on the EFR)
+  - nPWRreq is left unconnected (may be pulled down to GND after VCC voltage appears to save some power)
 
 ## Connecting the device to the controller
 
 1. Before connecting to the adapter board, connect the fully-flashed BRD2601B to your computer and [view the logging output](https://github.com/SiliconLabs/matter/blob/release_1.0.2-1.0/examples/lighting-app/silabs/efr32/README.md#viewing-logging-output). In there, there will be a sentence saying `Copy/paste the below URL in a browser to see the QR Code:`. Do so.
-2. Add the Matter device to your Matter controller by following your ecosystem's guide. Note that this is not a certified Matter accessory device, so you may have to enable developer mode or similar. This device is using `VID 0xFFF1 PID 0x8010` and the CSA development certificates, and will announce itself as a window blind.
+2. Add the Matter device to your Matter controller by following your ecosystem's guide. Note that this is not a certified Matter accessory device, so you may have to enable developer mode or similar. This device is using `VID 0xFFF1 PID 0x8010` and the CSA development certificates, and will present itself as a window blind.
 3. Remove the USB cable and connect the BRD2601B to the adapter board, and plug it into the RJ45 control port of your desk (where the keypad is connected).
 4. Wait for the Matter device to reconnect to the controller (can take 1~5 minutes)
 5. Happy voice-controlling your desk!
 
-# Known limitations
+# Known limitations / caveats
 
 - Currently, the firmware has not implemented changing the target height while in motion. You will have to re-send a command to move the position if the previous one was sent during a time where the desk was in motion.
 - The code is ugly.
+- After a reboot of the chip, it will report as 100% regardless of what the actual desk position is.
+
+# References
+
+- For basic pointers on the motor control protocol, [look around the internet](https://lmddgtfy.net/?q=US_41-07-002_LINAK_LIN_Bus_Protocol.pdf).
