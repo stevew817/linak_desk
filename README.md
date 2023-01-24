@@ -2,6 +2,8 @@
 
 This project exposes a LINAK standing desk (tested with DL5IC lift column pair which has a built-in controller, but should in theory work with CBD6S control box too...) to a Matter controller over Thread, such that it can easily be integrated with smart home logic. Primarily because it is cool to see things move on voice commands, but also because it allows you to do some health-related things, like put your sit/stand cycle on a timer...
 
+![hardware](./hardware.jpg)
+
 # Disclaimer
 The code provided here is working 'good enough' for my personal use, but I am in no way responsible should anything go wrong when you try to replicate this project. Do so entirely at your own risk.
 
