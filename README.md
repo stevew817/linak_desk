@@ -60,3 +60,4 @@ The code provided here is working 'good enough' for my personal use, but I am in
 # References
 
 - For basic pointers on the motor control protocol, [look around the internet](https://lmddgtfy.net/?q=US_41-07-002_LINAK_LIN_Bus_Protocol.pdf).
+- There's a Saleae Logic analyzer for the protocol [here](https://github.com/stevew817/linak-lin-analyzer).
